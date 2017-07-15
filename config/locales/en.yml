@@ -2,3 +2,14 @@ en:
   telegram_webhooks:
     start:
       hi: Hi there!
+    stop:
+      bye: Goodbye! To play again press /start button in chat! See you soon!
+    za_10:
+      no_more_questions: No more questions for you left! Type /clear_questions to have them all available again
+    message:
+      ongoing_question:
+        failure: "Currently you're answering to the %{action_name} quiz. I'm assuming that this message is an answer 
+                  to the last question that I asked you. If it's not true, type /skip in chat. 
+                  By the way - the answer is wrong!"
+    skip:
+      no_active_questions: No more active questions left!

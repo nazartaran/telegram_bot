@@ -1,0 +1,14 @@
+en:
+  telegram_webhooks:
+    start:
+      hi: Привіт!
+    stop:
+      bye: Папа! Щоби зіграти знову натисни кнопку /start в чаті! Удачі!
+    za_10:
+      no_more_questions: Ти відповів на всі питання! Щоби знову бачити питання натисни кнопку /clear_questions під чатом
+    message:
+      ongoing_question:
+        failure: "Наразі ви відповідаєте на питання квізу - %{action_name}. 
+                  Якщо це не так, натисніть кнопку /skip під чатом. А відповідь ваша, до речі, неправильна."
+    skip:
+      no_active_questions: Більше ніяких запитань!
