@@ -37,6 +37,9 @@ gem 'telegram-bot', github: 'telegram-bot-rb/telegram-bot', ref: '1098118'
 gem 'daemons', require: false
 gem 'redis-rails', '~> 5'
 gem 'telegram-bot-types'
+gem 'mongoid'
+gem 'google-api-client'
+gem 'sidekiq', '~> 5.0', '>= 5.0.4'
 
 group :development, :test do
   gem 'rspec-rails'

@@ -13,3 +13,23 @@ en:
                   By the way - the answer is wrong!"
     skip:
       no_active_questions: No more active questions left!
+    register:
+      successfull_registration: You have successfully registered for a tournament
+    start_tournament:
+      started: Tournament has begun!
+      enter_name: Please, add a name for your tournament
+  tournament:
+    correct_answer:
+      continue: Congratulations! Your answer is correct and you've made it to the next round!
+      too_late: 'Your answer is correct, but you posted it too late. You were %{number} who answered correctly. Maybe next time.'
+    incorrect_answer: Your answer is incorrect. Try again!
+    not_started: Tournament not started yet!
+    already_answered: You already gave a correct answer to this question
+    announce_winner: 'And the winner is: %{winner}!'
+    announce_start: 'Tournament will start in %{time} seconds!'
+    registration:
+      tournament_in_progress: Sorry, but Tournament has already been started
+      already_in: You are already registered for a tournament
+      success: You have been successfully registered for a tournament
+  google_spreadsheet:
+    empty_creadentials_prompt: Open the following URL in the browser and enter the resulting code after authorization

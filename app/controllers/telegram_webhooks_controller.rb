@@ -1,6 +1,5 @@
 class TelegramWebhooksController < Telegram::Bot::UpdatesController
   include Telegram::Bot::UpdatesController::MessageContext
-  # context_to_action!
   use_session!
 
   def start(*)
@@ -39,6 +38,50 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
                            reply_markup: get_markup('/za_10', '/clear_my_score', '/stop')
   end
 
+  def message(message)
+    question_context = first_question_in_progress
+
+    if question_context
+      if session[question_context][:answer].include?(message['text'].mb_chars.downcase.to_s)
+        session[question_context].delete(:answer)
+        questions_in_progress(question_context, false)
+        session[:score] += 10
+
+        response_text = "10 очок на барабані! Ваш поточний рахунок: #{session[:score]}"
+        markup = get_markup('/za_10')
+      else
+        response_text = t('.ongoing_question.failure', action_name: question_context)
+        markup = get_markup('/skip')
+      end
+    elsif Tournament.ongoing && current_user.competes_in_tournament
+      result = Tournaments::ResponseParser.parse(message['text'].mb_chars.downcase.to_s, current_user)
+      response_text = result.message
+      markup = nil
+    else
+      response_text = message['text']
+      markup = nil
+    end
+
+    respond_with :message, text: response_text, reply_markup: markup
+  end
+
+  def register(*)
+    result = Tournaments::Registration.call(current_user)
+
+    respond_with :message, text: result.response_text, parse_mode: 'Markdown'
+  end
+
+  def start_tournament(tournament_name = nil, time = 30)
+    if tournament_name
+      Tournaments::Start.call(bot, tournament_name, time)
+      response_text = t('.started')
+    else
+      response_text = t('.enter_name')
+    end
+
+    respond_with :message, text: response_text
+  end
+
   def za_10(*)
     init_current_action
     question = maybe_question
@@ -67,29 +110,6 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
     else
       response_text = 'Ноуп.'
       markup = get_markup('/skip')
-    end
-
-    respond_with :message, text: response_text, reply_markup: markup
-  end
-
-  def message(message)
-    question_context = first_question_in_progress
-
-    if question_context
-      if session[question_context][:answer].include?(message['text'].mb_chars.downcase.to_s)
-        session[question_context].delete(:answer)
-        questions_in_progress(question_context, false)
-        session[:score] += 10
-
-        response_text = "10 очок на барабані! Ваш поточний рахунок: #{session[:score]}"
-        markup = get_markup('/za_10')
-      else
-        response_text = t('.ongoing_question.failure', action_name: question_context)
-        markup = get_markup('/skip')
-      end
-    else
-      response_text = message['text']
-      markup = get_markup('/start')
     end
 
     respond_with :message, text: response_text, reply_markup: markup
@@ -142,6 +162,8 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   end
 
   def first_question_in_progress
+    return unless session[:questions_in_progress]
+
     question_hash = session[:questions_in_progress].find { |action, state| state }
     question_hash&.first
   end
@@ -157,5 +179,9 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   def get_markup(*buttons)
     Telegram::Bot::Types::ReplyKeyboardMarkup
       .new(keyboard: buttons.each_slice(1), one_time_keyboard: true).to_h
+  end
+
+  def current_user
+    @current_user ||= User.resolve_user(payload['from'].merge!('chat_id' => payload['chat']['id']))
   end
 end
