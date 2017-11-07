@@ -1,9 +1,7 @@
 class InsertRoundWinnerWorker
   include Sidekiq::Worker
 
-  def perform(username)
-    ongoing_tournament = Tournament.ongoing
-
-    GoogleAdapter::Spreadsheets::InsertRoundWinner.call(username, ongoing_tournament)
+  def perform(username, place)
+    GoogleAdapter::Spreadsheets::InsertRoundWinner.call(username, Tournament.ongoing, place)
   end
 end

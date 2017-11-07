@@ -2,7 +2,7 @@ require 'thread'
 
 module Tournaments
   class Start
-    ROUND_TIME_IN_SECONDS = 120
+    ROUND_TIME_IN_SECONDS = 60
     WINNERS_COUNT = 1
     Response = Struct.new(:response_text)
 
@@ -23,7 +23,7 @@ module Tournaments
       Thread.new do
         tournament.start
 
-        until tournament.previous_round_winners_count == WINNERS_COUNT
+        until tournament.has_winner?
           tournament.refresh_correct_counter
           time = Time.now
 
@@ -45,10 +45,6 @@ module Tournaments
       Response.new(response_text: text)
     end
 
-    def current_competitors
-      tournament.current_competitors
-    end
-
     def competitors
       @competitors ||= User.competitors
     end
@@ -58,13 +54,13 @@ module Tournaments
     end
 
     def ask_question(question)
-      current_competitors.each do |competitor|
+      tournament.current_competitors.each do |competitor|
         bot.send_message(chat_id: competitor.chat_id, text: question, parse_mode: 'Markdown')
       end
     end
 
     def announce_start
-      competitors.each do |competitor|
+      tournament.current_competitors.each do |competitor|
         bot.send_message(chat_id: competitor.chat_id, text: I18n.t('tournament.announce_start', time: time_until_start),
                          parse_mode: 'Markdown')
       end
@@ -78,7 +74,7 @@ module Tournaments
     end
 
     def announce_winner
-      winner = CorrectUser.winner(tournament.round)
+      winner = CorrectUser.winner(tournament.previous_round)
 
       GoogleAdapter::Spreadsheets::InsertTournamentWinner.call(winner.full_name)
       competitors.each do |competitor|

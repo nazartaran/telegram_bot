@@ -1,5 +1,8 @@
 class Tournament
   FIRST_ROUND = 1
+  SECOND_ROUND = 2
+  BEGINNING_ROUNDS = [FIRST_ROUND, SECOND_ROUND].freeze
+  WINNERS_COUNT = 1
 
   include Mongoid::Document
 
@@ -27,30 +30,30 @@ class Tournament
   def refresh_correct_counter
     return if round == FIRST_ROUND
 
-    update_attribute(:correct_users_count, prev_round_winners.count - 1)
-  end
+    new_max_correct_users_counter = prev_round_winners.count - 1
 
-  def previous_round_winners_count
-    return correct_users_count if round == FIRST_ROUND
-
-    previous_winners_count = prev_round_winners.count
-    previous_winners_count.zero? ? Tournaments::Start::WINNERS_COUNT : previous_winners_count
+    update_attribute(:correct_users_count, new_max_correct_users_counter)
   end
 
   def current_competitors
     return User.competitors if round == FIRST_ROUND
 
-    correct_user_ids = CorrectUser.for_round(previous_round).desc('_id').limit(correct_users_count).pluck(:uid)
+    correct_user_ids = prev_round_winners.desc('_id').limit(correct_users_count + 1).pluck(:uid)
     User.in(uid: correct_user_ids)
+  end
+
+  def has_winner?
+    return false if round == FIRST_ROUND
+    correct_users_count <= 1
+  end
+
+  def previous_round
+    round - 1
   end
 
   private
 
   def prev_round_winners
     CorrectUser.for_round(previous_round)
-  end
-
-  def previous_round
-    round - 1
   end
 end

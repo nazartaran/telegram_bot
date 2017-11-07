@@ -3,7 +3,14 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   use_session!
 
   def message(message)
-    respond_with :message, text:  message['text'], reply_markup: nil
+    if Tournament.ongoing && current_user.competes_in_tournament
+      result = Tournaments::ResponseParser.parse(message['text'].mb_chars.downcase.to_s, current_user)
+      response_text = result.message
+    else
+      response_text = message['text']
+    end
+
+    respond_with :message, text: response_text, reply_markup: nil
   end
 
   def register(*)
