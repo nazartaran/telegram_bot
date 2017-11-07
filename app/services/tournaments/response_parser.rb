@@ -50,7 +50,7 @@ module Tournaments
     end
 
     def answer_in_time?
-      correct_users_count < ongoing_tournament.correct_users_count
+      correct_users_count < ongoing_tournament.max_correct_users_count
     end
 
     def mark_user_as_correct

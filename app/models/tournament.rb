@@ -7,7 +7,7 @@ class Tournament
   include Mongoid::Document
 
   field :round, type: Integer, default: 1
-  field :correct_users_count, type: Integer, default: 5
+  field :max_correct_users_count, type: Integer, default: 5
   field :name, type: String
   field :ongoing, type: Boolean, default: 1
 
@@ -32,19 +32,19 @@ class Tournament
 
     new_max_correct_users_counter = prev_round_winners.count - 1
 
-    update_attribute(:correct_users_count, new_max_correct_users_counter)
+    update_attribute(:max_correct_users_count, new_max_correct_users_counter)
   end
 
   def current_competitors
     return User.competitors if round == FIRST_ROUND
 
-    correct_user_ids = prev_round_winners.desc('_id').limit(correct_users_count + 1).pluck(:uid)
+    correct_user_ids = prev_round_winners.desc('_id').limit(max_correct_users_count + 1).pluck(:uid)
     User.in(uid: correct_user_ids)
   end
 
   def has_winner?
     return false if round == FIRST_ROUND
-    correct_users_count <= 1
+    max_correct_users_count <= 1
   end
 
   def previous_round
