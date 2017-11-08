@@ -26,7 +26,8 @@ en:
     not_started: Tournament not started yet!
     already_answered: You already gave a correct answer to this question
     announce_winner: 'And the winner is: %{winner}!'
-    announce_start: 'Tournament will start in %{time} seconds!'
+    no_winner: 'Sad, but there is no winner :('
+    announce_start: 'Tournament will start in %{time} seconds! Players: %{players}'
     registration:
       tournament_in_progress: Sorry, but Tournament has already been started
       already_in: You are already registered for a tournament

@@ -24,7 +24,6 @@ module Tournaments
         tournament.start
 
         until tournament.has_winner?
-          tournament.refresh_correct_counter
           time = Time.now
 
           round_question = question(tournament.round)
@@ -32,7 +31,10 @@ module Tournaments
 
           sleep(time + ROUND_TIME_IN_SECONDS - Time.now)
           tournament.next_round
+
+          tournament.refresh_correct_counter
         end
+
         finish_tournament
       end
     end
@@ -60,8 +62,10 @@ module Tournaments
     end
 
     def announce_start
+      players = tournament.current_competitors.map(&:full_name).join(', ')
       tournament.current_competitors.each do |competitor|
-        bot.send_message(chat_id: competitor.chat_id, text: I18n.t('tournament.announce_start', time: time_until_start),
+        bot.send_message(chat_id: competitor.chat_id, text: I18n.t('tournament.announce_start', time: time_until_start,
+                                                                                                players: players),
                          parse_mode: 'Markdown')
       end
     end
@@ -77,10 +81,9 @@ module Tournaments
       winner = CorrectUser.winner(tournament.previous_round)
 
       GoogleAdapter::Spreadsheets::InsertTournamentWinner.call(winner.full_name)
+      message = winner ? I18n.t('tournament.announce_winner', winner: winner.full_name) : I18n.t('tournament.no_winner')
       competitors.each do |competitor|
-        bot.send_message(chat_id: competitor.chat_id,
-                         text: I18n.t('tournament.announce_winner', winner: winner.full_name),
-                         parse_mode: 'Markdown')
+        bot.send_message(chat_id: competitor.chat_id, text: message, parse_mode: 'Markdown')
       end
     end
   end
