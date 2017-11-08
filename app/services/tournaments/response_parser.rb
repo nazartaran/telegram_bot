@@ -21,8 +21,6 @@ module Tournaments
 
         result(message: I18n.t('tournament.correct_answer.continue'), correct_answer: true, continue: true)
       elsif correct_answer?
-        mark_user_as_correct
-
         result(message: I18n.t('tournament.correct_answer.too_late', number: correct_users_count + 1), correct_answer: true)
       else
         result(message: I18n.t('tournament.incorrect_answer'))

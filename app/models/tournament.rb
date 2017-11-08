@@ -16,7 +16,8 @@ class Tournament
   end
 
   def start
-    update_attribute(:round, FIRST_ROUND)
+    competitors_count = User.competitors.count
+    update_attributes(round: FIRST_ROUND, max_correct_users_count: [competitors_count, 5].min)
   end
 
   def next_round
@@ -44,7 +45,8 @@ class Tournament
 
   def has_winner?
     return false if round == FIRST_ROUND
-    max_correct_users_count <= 1
+
+    current_competitors.count <= 1
   end
 
   def previous_round

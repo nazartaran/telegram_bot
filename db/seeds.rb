@@ -35,4 +35,3 @@ questions = [
 questions.each do |question|
   Question.new(question).upsert
 end
-
