@@ -29,7 +29,7 @@ class Tournament
   end
 
   def refresh_correct_counter
-    return if round == FIRST_ROUND
+    return if first_round?
 
     new_max_correct_users_counter = prev_round_winners.count - 1
 
@@ -44,13 +44,17 @@ class Tournament
   end
 
   def has_winner?
-    return false if round == FIRST_ROUND
+    return false if first_round?
 
     current_competitors.count <= 1
   end
 
   def previous_round
     round - 1
+  end
+
+  def first_round?
+    round == FIRST_ROUND
   end
 
   private

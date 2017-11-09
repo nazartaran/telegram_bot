@@ -15,6 +15,8 @@ module Tournaments
     def parse
       if user_already_answered?
         result(message: I18n.t('tournament.already_answered'))
+      elsif previously_lost?
+        result(message: I18n.t('tournament.previously_lost'))
       elsif correct_answer? && answer_in_time?
         mark_user_as_correct
         InsertRoundWinnerWorker.perform_async(user.full_name, correct_users_count)
@@ -37,6 +39,12 @@ module Tournaments
 
     def user_already_answered?
       CorrectUser.find_by(uid: user.uid, round: ongoing_tournament.round)
+    end
+
+    def previously_lost?
+      return false if ongoing_tournament.first_round?
+
+      CorrectUser.find_by(uid: user.uid, round: ongoing_tournament.previous_round).nil?
     end
 
     def correct_answer?

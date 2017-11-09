@@ -25,6 +25,7 @@ en:
     incorrect_answer: Your answer is incorrect. Try again!
     not_started: Tournament not started yet!
     already_answered: You already gave a correct answer to this question
+    previously_lost: You lost on previous round and cant participate now
     announce_winner: 'And the winner is: %{winner}!'
     no_winner: 'Sad, but there is no winner :('
     announce_start: 'Tournament will start in %{time} seconds! Players: %{players}'
