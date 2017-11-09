@@ -40,6 +40,7 @@ gem 'telegram-bot-types'
 gem 'mongoid'
 gem 'google-api-client'
 gem 'sidekiq', '~> 5.0', '>= 5.0.4'
+gem 'similar_text', '~> 0.0.4'
 
 group :development, :test do
   gem 'rspec-rails'

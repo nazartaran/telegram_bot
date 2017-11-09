@@ -224,6 +224,7 @@ GEM
       faraday (~> 0.9)
       jwt (~> 1.5)
       multi_json (~> 1.10)
+    similar_text (0.0.4)
     slop (3.6.0)
     spring (2.0.0)
       activesupport (>= 4.2)
@@ -279,6 +280,7 @@ DEPENDENCIES
   rspec-its
   rspec-rails
   sidekiq (~> 5.0, >= 5.0.4)
+  similar_text (~> 0.0.4)
   spring
   spring-commands-rspec
   spring-watcher-listen (~> 2.0.0)

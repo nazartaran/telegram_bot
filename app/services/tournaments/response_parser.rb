@@ -1,5 +1,6 @@
 module Tournaments
   class ResponseParser
+    PERMISSIBLE_COINCIDENCE_PERCENTAGE = 75
     Result = Struct.new(:message, :correct_answer?, :continue?)
 
     def self.parse(*args)
@@ -48,7 +49,7 @@ module Tournaments
     end
 
     def correct_answer?
-      round_answers.include?(answer)
+      round_answers.any? { |round_answer| round_answer.similar(answer) >= PERMISSIBLE_COINCIDENCE_PERCENTAGE }
     end
 
     def round_answers
