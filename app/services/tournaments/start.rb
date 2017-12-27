@@ -56,7 +56,7 @@ module Tournaments
     end
 
     def ask_question(question)
-      tournament.current_competitors.each do |competitor|
+      competitors.each do |competitor|
         bot.send_message(chat_id: competitor.chat_id, text: question, parse_mode: 'Markdown')
       end
     end

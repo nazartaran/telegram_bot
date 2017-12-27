@@ -14,10 +14,28 @@ module Tournaments
     end
 
     def parse
+      if previously_lost?
+        non_scoring_parser
+      else
+        scoring_parser
+      end
+    end
+
+    private
+
+    attr_reader :answer, :user, :ongoing_tournament
+
+    def non_scoring_parser
+      if correct_answer?
+        result(message: I18n.t('tournament.correct_answer.non_scoring'), correct_answer: true)
+      else
+        result(message: I18n.t('tournament.incorrect_answer'))
+      end
+    end
+
+    def scoring_parser
       if user_already_answered?
         result(message: I18n.t('tournament.already_answered'))
-      elsif previously_lost?
-        result(message: I18n.t('tournament.previously_lost'))
       elsif correct_answer? && answer_in_time?
         mark_user_as_correct
         InsertRoundWinnerWorker.perform_async(user.full_name, correct_users_count)
@@ -29,10 +47,6 @@ module Tournaments
         result(message: I18n.t('tournament.incorrect_answer'))
       end
     end
-
-    private
-
-    attr_reader :answer, :user, :ongoing_tournament
 
     def result(message:, correct_answer: false, continue: false)
       Result.new(message, correct_answer, continue)
