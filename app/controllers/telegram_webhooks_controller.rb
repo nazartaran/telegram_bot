@@ -30,6 +30,15 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
     respond_with :message, text: response_text
   end
 
+  def publish_news(pwd, url, link = nil)
+    return unless pwd == Rails.application.secrets[:bot_publish_password]
+
+    User.all.each do |subscriber|
+      bot.send_photo(chat_id: subscriber.chat_id, photo: url)
+      bot.send_message(chat_id: subscriber.chat_id, text: link) if link
+    end
+  end
+
   private
 
   # example usage: get_markup('/za_10', '/clear_my_score', '/stop')
