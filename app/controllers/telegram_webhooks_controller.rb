@@ -1,4 +1,6 @@
 class TelegramWebhooksController < Telegram::Bot::UpdatesController
+  SUBSCRIBERS_BATCH_SIZE = 5
+
   include Telegram::Bot::UpdatesController::MessageContext
   use_session!
 
@@ -33,9 +35,13 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   def publish_news(pwd, url, link = nil)
     return unless pwd == Rails.application.secrets[:bot_publish_password]
 
-    User.all.each do |subscriber|
-      bot.send_photo(chat_id: subscriber.chat_id, photo: url)
-      bot.send_message(chat_id: subscriber.chat_id, text: link) if link
+    User.all.to_a.in_groups_of(SUBSCRIBERS_BATCH_SIZE, false).each do |subscriber_batch|
+      subscriber_batch.each do |subscriber|
+        bot.send_photo(chat_id: subscriber.chat_id, photo: url)
+        bot.send_message(chat_id: subscriber.chat_id, text: link) if link
+      end
+
+      sleep(1) # prevents >30 messages per seconds(not allowed by Telegram API)
     end
   end
 
