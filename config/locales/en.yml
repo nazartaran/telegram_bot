@@ -22,6 +22,7 @@ en:
     correct_answer:
       continue: Congratulations! Your answer is correct and you've made it to the next round!
       too_late: 'Your answer is correct, but you posted it too late. You were %{number} who answered correctly. Maybe next time.'
+      non_scoring: Congratulations! Your answer is correct! But you're participating in challenge anymore
     incorrect_answer: Your answer is incorrect. Try again!
     not_started: Tournament not started yet!
     already_answered: You already gave a correct answer to this question
