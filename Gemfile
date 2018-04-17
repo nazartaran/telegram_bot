@@ -41,6 +41,7 @@ gem 'mongoid'
 gem 'google-api-client'
 gem 'sidekiq', '~> 5.0', '>= 5.0.4'
 gem 'similar_text', '~> 0.0.4'
+gem 'rest-client'
 
 group :development, :test do
   gem 'factory_bot_rails'
