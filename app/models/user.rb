@@ -18,8 +18,8 @@ class User
 
   scope :competitors, -> { where(competes_in_tournament: true) }
 
-  def self.make_admin_by_name!(first_name, last_name)
-    find_by(first_name: first_name, last_name: last_name)&.update!(is_admin: true)
+  def self.make_admin_by_name(first_name, last_name)
+    find_by(first_name: first_name, last_name: last_name)&.update(is_admin: true)
   end
 
   def self.resolve_user(user_params)

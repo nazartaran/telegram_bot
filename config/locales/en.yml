@@ -23,6 +23,9 @@ en:
       start: Start tournament
       add: Add questions
       notify: Notify
+    add_admin:
+      added: Admin added
+      bad_data: Bad Name, please check it again
     callback_query:
       initial_tournament: The tournament will start soon. Participate!
       register: Register

@@ -17,7 +17,11 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   def add_admin(pwd = nil, first_name, last_name)
     return unless current_user_is_admin? || pwd == Rails.application.secrets[:bot_publish_password]
 
-    User.make_admin_by_name!(first_name, last_name)
+    if User.make_admin_by_name(first_name, last_name)
+      respond_with :message, text: t('.added')
+    else
+      respond_with :message, text: t('.bad_data')
+    end
   end
 
   def admin
