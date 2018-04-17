@@ -16,7 +16,16 @@ en:
       successfull_registration: Ви успішно зареєструвалися на наш черговий турнір. Очікуйте на запитання!
     start_tournament:
       started: Турнір розпочато!
-      enter_name: Назвіть турнір.
+    admin:
+      hi_admin: 'Привіт, адмін %{name}'
+      announce: Анонсувати турнір
+      start: Стартувати турнір
+      add: Додати запитання
+      notify: Оголосити про подію
+    callback_query:
+      initial_tournament: Скоро розпочнеться турнір, встигни зареєструватись!
+      register: Реєстрація
+      please_send_a_file: Будь ласка відправ мені файл з описом події
   tournament:
     correct_answer:
       continue: Вітаємо! Ваша відповідь правильна і ви проходите далі!

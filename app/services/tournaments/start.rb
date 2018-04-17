@@ -10,9 +10,9 @@ module Tournaments
       new(*args).call
     end
 
-    def initialize(bot, tournament_name, time_until_start)
+    def initialize(bot, time_until_start)
       @bot = bot
-      @tournament = Tournament.create!(name: tournament_name, ongoing: true)
+      @tournament = Tournament.create!(name: SecureRandom.hex, ongoing: true)
       @time_until_start = time_until_start.to_i.seconds
     end
 

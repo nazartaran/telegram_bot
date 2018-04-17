@@ -10,13 +10,17 @@ class User
   field :round, type: Integer
   field :competes_in_tournament, type: Boolean, default: 0
   field :is_bot, type: Boolean, default: 0
+  field :is_admin, type: Boolean, default: 0
 
   index({ uid: 1 }, { unique: true, name: 'uid_index' })
-
 
   validates_uniqueness_of :uid
 
   scope :competitors, -> { where(competes_in_tournament: true) }
+
+  def self.make_admin_by_name!(first_name, last_name)
+    find_by(first_name: first_name, last_name: last_name)&.update!(is_admin: true)
+  end
 
   def self.resolve_user(user_params)
     user = find_by(uid: user_params['id'])
