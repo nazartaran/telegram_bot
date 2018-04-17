@@ -17,7 +17,19 @@ en:
       successfull_registration: You have successfully registered for a tournament
     start_tournament:
       started: Tournament has begun!
-      enter_name: Please, add a name for your tournament
+    admin:
+      hi_admin: 'Hello, admin %{name}'
+      announce: Announce tournament
+      start: Start tournament
+      add: Add questions
+      notify: Notify
+    add_admin:
+      added: Admin added
+      bad_data: Bad Name, please check it again
+    callback_query:
+      initial_tournament: The tournament will start soon. Participate!
+      register: Register
+      please_send_a_file: Please send me a file with the text
   tournament:
     correct_answer:
       continue: Congratulations! Your answer is correct and you've made it to the next round!

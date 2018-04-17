@@ -1,10 +1,9 @@
 class TelegramWebhooksController < Telegram::Bot::UpdatesController
-  SUBSCRIBERS_BATCH_SIZE = 5
-
   include Telegram::Bot::UpdatesController::MessageContext
   use_session!
 
   def message(message)
+    return proceed_photo(message) if photo?(message)
     if Tournament.ongoing && current_user.competes_in_tournament
       result = Tournaments::ResponseParser.parse(message['text'].mb_chars.downcase.to_s, current_user)
       response_text = result.message
@@ -15,34 +14,33 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
     respond_with :message, text: response_text, reply_markup: nil
   end
 
-  def register(*)
-    result = Tournaments::Registration.call(current_user)
+  def add_admin(pwd = nil, first_name, last_name)
+    return unless current_user_is_admin? || pwd == Rails.application.secrets[:bot_publish_password]
 
-    respond_with :message, text: result.response_text, parse_mode: 'Markdown'
-  end
-
-  def start_tournament(tournament_name = nil, time = 30)
-    if tournament_name
-      Tournaments::Start.call(bot, tournament_name, time)
-      response_text = t('.started')
+    if User.make_admin_by_name(first_name, last_name)
+      respond_with :message, text: t('.added')
     else
-      response_text = t('.enter_name')
+      respond_with :message, text: t('.bad_data')
     end
-
-    respond_with :message, text: response_text
   end
 
-  def publish_news(pwd, url, link = nil)
-    return unless pwd == Rails.application.secrets[:bot_publish_password]
+  def admin
+    return unless current_user_is_admin?
 
-    User.all.to_a.in_groups_of(SUBSCRIBERS_BATCH_SIZE, false).each do |subscriber_batch|
-      subscriber_batch.each do |subscriber|
-        bot.send_photo(chat_id: subscriber.chat_id, photo: url)
-        bot.send_message(chat_id: subscriber.chat_id, text: link) if link
-      end
+    respond_with :message, text: t('.hi_admin', name: current_user.full_name), reply_markup: {
+      inline_keyboard: [
+        [
+          { text: t('.announce'), callback_data: 'init_tournament' },
+          { text: t('.start'), callback_data: 'start_tournament' },
+          { text: t('.add'), callback_data: 'add_questions' },
+          { text: t('.notify'), callback_data: 'notify' }
+        ]
+      ]
+    }
+  end
 
-      sleep(1) # prevents >30 messages per seconds(not allowed by Telegram API)
-    end
+  def callback_query(data, *attrs)
+    send(data, *attrs)
   end
 
   private
@@ -54,7 +52,60 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
       .new(keyboard: buttons.each_slice(1), one_time_keyboard: true).to_h
   end
 
+  def start_tournament(time = 30)
+    return unless current_user_is_admin?
+
+    Tournaments::Start.call(bot, time)
+
+    respond_with :message, text: t('telegram_webhooks.start_tournament.started')
+  end
+
+  def init_tournament
+    return unless current_user_is_admin?
+
+    NotifyAll.new.each do |subscriber|
+      bot.send_message(chat_id: subscriber.chat_id, text: t('.initial_tournament'), reply_markup: {
+        inline_keyboard: [
+          [
+            { text: t('.register'), callback_data: 'register' }
+          ]
+        ]
+      })
+    end
+  end
+
+  def notify
+    return unless current_user_is_admin?
+
+    respond_with :message, text: t('.please_send_a_file')
+  end
+
+  def register(*)
+    result = Tournaments::Registration.call(current_user)
+
+    respond_with :message, text: result.response_text, parse_mode: 'Markdown'
+  end
+
   def current_user
-    @current_user ||= User.resolve_user(payload['from'].merge!('chat_id' => payload['chat']['id']))
+    @current_user ||= User.resolve_user(payload['from'].merge!('chat_id' => payload['from']['id']))
+  end
+
+  def current_user_is_admin?
+    current_user.is_admin?
+  end
+
+  def photo?(msg)
+    msg['photo'].present?
+  end
+
+  def proceed_photo(msg)
+    return unless current_user_is_admin?
+
+    link = msg['caption']
+
+    NotifyAll.new.each do |subscriber|
+      bot.send_photo(chat_id: subscriber.chat_id, photo: msg['photo'].sample['file_id'])
+      bot.send_message(chat_id: subscriber.chat_id, text: link) if link
+    end
   end
 end
