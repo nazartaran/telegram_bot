@@ -39,19 +39,8 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
     }
   end
 
-  def callback_query(data)
-    case data
-    when 'start_tournament'
-      start_tournament
-    when 'init_tournament'
-      init_tournament
-    when 'add_questions'
-      add_questions
-    when 'register'
-      register
-    when 'notify'
-      notify
-    end
+  def callback_query(data, *attrs)
+    send(data, *attrs)
   end
 
   private
