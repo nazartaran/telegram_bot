@@ -3,6 +3,7 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   use_session!
 
   def message(message)
+    return proceed_csv(message) if document?(message)
     return proceed_photo(message) if photo?(message)
     if Tournament.ongoing && current_user.competes_in_tournament
       result = Tournaments::ResponseParser.parse(message['text'].mb_chars.downcase.to_s, current_user)
@@ -52,6 +53,7 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
       .new(keyboard: buttons.each_slice(1), one_time_keyboard: true).to_h
   end
 
+  # Admin Section
   def start_tournament(time = 30)
     return unless current_user_is_admin?
 
@@ -80,6 +82,13 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
     respond_with :message, text: t('.please_send_a_file')
   end
 
+  def add_questions
+    return unless current_user_is_admin?
+
+    respond_with :message, text: t('.attach_csv')
+  end
+
+  # General Section
   def register(*)
     result = Tournaments::Registration.call(current_user)
 
@@ -98,6 +107,10 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
     msg['photo'].present?
   end
 
+  def document?(msg)
+    msg['document'].present?
+  end
+
   def proceed_photo(msg)
     return unless current_user_is_admin?
 
@@ -106,6 +119,17 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
     NotifyAll.new.each do |subscriber|
       bot.send_photo(chat_id: subscriber.chat_id, photo: msg['photo'].sample['file_id'])
       bot.send_message(chat_id: subscriber.chat_id, text: link) if link
+    end
+  end
+
+  def proceed_csv(msg)
+    return unless current_user_is_admin?
+
+    path_ending = bot.get_file(msg['document'])['result']['file_path']
+    if QuestionsImporter.success?(path_ending)
+      respond_with :message, text: t('.success_upload'), parse_mode: 'Markdown'
+    else
+      respond_with :message, text: t('.bad_upload'), parse_mode: 'Markdown'
     end
   end
 end

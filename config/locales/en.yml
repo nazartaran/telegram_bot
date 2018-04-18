@@ -11,6 +11,8 @@ en:
         failure: "Currently you're answering to the %{action_name} quiz. I'm assuming that this message is an answer 
                   to the last question that I asked you. If it's not true, type /skip in chat. 
                   By the way - the answer is wrong!"
+      bad_upload: Something went wrong, try again later or ask some help
+      success_upload: Uploaded!
     skip:
       no_active_questions: No more active questions left!
     register:
@@ -30,6 +32,7 @@ en:
       initial_tournament: The tournament will start soon. Participate!
       register: Register
       please_send_a_file: Please send me a file with the text
+      attach_csv: Please attach CSV file with the questions
   tournament:
     correct_answer:
       continue: Congratulations! Your answer is correct and you've made it to the next round!
