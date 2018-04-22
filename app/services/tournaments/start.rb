@@ -31,6 +31,7 @@ module Tournaments
 
           sleep(time + ROUND_TIME_IN_SECONDS - Time.now)
           tournament.next_round
+          round_question.update(outdated: true)
 
           tournament.refresh_correct_counter
         end
