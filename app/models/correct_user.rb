@@ -14,7 +14,7 @@ class CorrectUser
   private
 
   def self.resolve_winner(final_round)
-    winner = find_by(round: final_round) || for_round(final_round - 1).desc('_id').first
+    winner = find_by(round: final_round) || for_round(final_round - 1).asc('_id').first
     winner&.uid
   end
 end
