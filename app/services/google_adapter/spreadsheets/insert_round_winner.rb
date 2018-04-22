@@ -1,8 +1,7 @@
 #frozen_string_literal: true
 module GoogleAdapter
   module Spreadsheets
-    class InsertRoundWinner
-      SPREADSHEET_ID = '1YXPjE5PYLTISymiJpy4Fk_AZPbau0rWlSDQx9NTSr4Y'
+    class InsertRoundWinner < BaseInsert
       INPUT_OPTION = 'USER_ENTERED'
       RANGE_CELL_MAPPING = {
         1 => 'B',
@@ -11,11 +10,7 @@ module GoogleAdapter
         4 => 'E',
         5 => 'F'
       }.freeze
-      CELL_OFFSET = 9
-
-      def self.call(*args)
-        new(*args).call
-      end
+      CELL_OFFSET = 1
 
       def initialize(username, tournament, place)
         @username = username
