@@ -4,6 +4,7 @@ require 'googleauth'
 require 'googleauth/stores/file_token_store'
 require 'fileutils'
 require 'pathname'
+require 'googleauth/stores/file_token_store'
 
 module GoogleAdapter
   class Spreadsheet
@@ -12,7 +13,7 @@ module GoogleAdapter
     SCOPE = 'https://www.googleapis.com/auth/spreadsheets'
     DEFAULT_USER_ID = 'default'
     CLIENT_SECRETS_PATH = Rails.root.join(*%w(client_secret.json))
-    CREDENTIALS_PATH = File.join(Dir.home, '.credentials', 'sheets.googleapis.com-ruby-quickstart.yaml')
+    CREDENTIALS_PATH = 'token.yaml'
 
     def self.call
       new.call
