@@ -1,14 +1,9 @@
 #frozen_string_literal: true
 module GoogleAdapter
   module Spreadsheets
-    class InsertTournamentWinner
-      SPREADSHEET_ID = '1YXPjE5PYLTISymiJpy4Fk_AZPbau0rWlSDQx9NTSr4Y'
-      RANGE = 'G10:H'
+    class InsertTournamentWinner < BaseInsert
+      RANGE = 'G2:H'
       INPUT_OPTION = 'USER_ENTERED'
-
-      def self.call(*args)
-        new(*args).call
-      end
 
       def initialize(username)
         @username = username

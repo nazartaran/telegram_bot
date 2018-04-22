@@ -11,8 +11,8 @@ module GoogleAdapter
     APPLICATION_NAME = 'Telegram Bot'
     SCOPE = 'https://www.googleapis.com/auth/spreadsheets'
     DEFAULT_USER_ID = 'default'
-    CLIENT_SECRETS_PATH = Pathname.new('/Users/nazar/Documents/client_secret.json')
-    CREDENTIALS_PATH = File.join(Dir.home, '.credentials', "sheets.googleapis.com-ruby-quickstart.yaml")
+    CLIENT_SECRETS_PATH = Rails.root.join(*%w(client_secret.json))
+    CREDENTIALS_PATH = File.join(Dir.home, '.credentials', 'sheets.googleapis.com-ruby-quickstart.yaml')
 
     def self.call
       new.call

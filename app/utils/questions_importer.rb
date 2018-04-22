@@ -10,8 +10,8 @@ module QuestionsImporter
     response = RestClient.get("#{URL_PREFIX}#{Rails.application.secrets.telegram['bot']['token']}/#{path}").body
 
     questions = CSV.new(response).each_with_index.map do |row, index|
-      body, *answers = row.compact.map { |cell| cell.force_encoding('utf-8') }
-      Question.new(body: body, answers: answers.reject(&:blank?), round: index + 1) unless index >= 5
+      body, *answers = row.reject { |cell| cell.strip.blank? }.map { |cell| cell.force_encoding('utf-8') }
+      Question.new(body: body, answers: answers, round: index + 1) unless index >= 5
     end.compact
 
     if questions.all?(&:valid?)
