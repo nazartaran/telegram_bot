@@ -117,8 +117,7 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
     link = msg['caption']
 
     NotifyAll.new.each do |subscriber|
-      bot.send_photo(chat_id: subscriber.chat_id, photo: msg['photo'].sample['file_id'])
-      bot.send_message(chat_id: subscriber.chat_id, text: link) if link
+      bot.send_photo(chat_id: subscriber.chat_id, photo: msg['photo'].sample['file_id'], caption: link)
     end
   end
 
