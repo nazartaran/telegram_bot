@@ -3,13 +3,13 @@ class Question
 
   field :body, type: String
   field :answers, type: Array
-  field :for_tournament, type: Boolean, default: true
+  field :outdated, type: Boolean, default: false
   field :round, type: Integer
 
   validates :body, :answers, presence: true
   validates :body, uniqueness: { scope: :answers }
 
   def self.for_round(round)
-    find_by(for_tournament: true, round: round)
+    find_by(outdated: false, round: round)
   end
 end

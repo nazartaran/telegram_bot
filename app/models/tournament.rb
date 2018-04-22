@@ -1,7 +1,5 @@
 class Tournament
   FIRST_ROUND = 1
-  SECOND_ROUND = 2
-  BEGINNING_ROUNDS = [FIRST_ROUND, SECOND_ROUND].freeze
   WINNERS_COUNT = 1
 
   include Mongoid::Document
@@ -29,8 +27,6 @@ class Tournament
   end
 
   def refresh_correct_counter
-    return if first_round?
-
     new_max_correct_users_counter = prev_round_winners.count - 1
 
     update_attribute(:max_correct_users_count, new_max_correct_users_counter)
