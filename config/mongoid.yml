@@ -157,3 +157,19 @@ test:
         max_pool_size: 1
   options:
     raise_not_found_error: false
+
+production:
+  clients:
+    default:
+      uri: <%= ENV['MONGOLAB_YELLOW_URI'] %>
+      options:
+        skip_version_check: true
+        safe: true
+  sessions:
+    default:
+      uri: <%= ENV['MONGOLAB_YELLOW_URI'] %>
+      options:
+        skip_version_check: true
+        safe: true
+  options:
+    raise_not_found_error: false
