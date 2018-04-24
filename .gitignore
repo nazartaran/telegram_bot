@@ -16,8 +16,10 @@
 # Ignore Byebug command history file.
 .byebug_history
 
-config/secrets.yml
 spec/examples.txt
 
 # RubyMine files
 .idea
+
+# ignore google-token
+token.yaml
