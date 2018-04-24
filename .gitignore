@@ -20,6 +20,3 @@ spec/examples.txt
 
 # RubyMine files
 .idea
-
-# ignore google-token
-token.yaml
