@@ -42,6 +42,7 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
 
   def callback_query(data, *attrs)
     send(data, *attrs)
+    answer_callback_query nil
   end
 
   private
