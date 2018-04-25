@@ -50,6 +50,9 @@ GEM
       tzinfo (~> 1.1)
     addressable (2.5.1)
       public_suffix (~> 2.0, >= 2.0.2)
+    airbrake (7.2.1)
+      airbrake-ruby (~> 2.5)
+    airbrake-ruby (2.8.3)
     arel (7.1.4)
     awesome_print (1.7.0)
     axiom-types (0.1.1)
@@ -280,6 +283,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  airbrake (~> 7.2)
   awesome_print
   byebug
   daemons
