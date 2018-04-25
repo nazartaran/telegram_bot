@@ -57,8 +57,11 @@ module Tournaments
     end
 
     def ask_question(question)
+      # "\"Lorem\" is just a \"word\"" => "«Lorem» is just a «word»"
+      escaped_question = question.gsub(/(\")([^\"]+?)(\")/, '«\2»')
+
       competitors.each do |competitor|
-        bot.send_message(chat_id: competitor.chat_id, text: question, parse_mode: 'Markdown')
+        bot.send_message(chat_id: competitor.chat_id, text: escaped_question, parse_mode: 'Markdown')
       end
     end
 
