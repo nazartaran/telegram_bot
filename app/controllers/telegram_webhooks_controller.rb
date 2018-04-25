@@ -30,10 +30,12 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
 
     respond_with :message, text: t('.hi_admin', name: current_user.full_name), reply_markup: {
       inline_keyboard: [
+        [{ text: t('.notify'), callback_data: 'notify' }],
         [{ text: t('.announce'), callback_data: 'init_tournament' }],
         [{ text: t('.start'), callback_data: 'start_tournament' }],
+        [{ text: t('.close'), callback_data: 'close_tournament' }],
         [{ text: t('.add'), callback_data: 'add_questions' }],
-        [{ text: t('.notify'), callback_data: 'notify' }]
+        [{ text: t('.up_to_date_question'), callback_data: 'up_to_date_question' }]
       ]
     }
   end
@@ -73,6 +75,14 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
     end
   end
 
+  def close_tournament
+    return unless current_user_is_admin?
+
+    Tournaments::Close.now
+
+    respond_with :message, text: t('.closed')
+  end
+
   def notify
     return unless current_user_is_admin?
 
@@ -83,6 +93,14 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
     return unless current_user_is_admin?
 
     respond_with :message, text: t('.attach_csv')
+  end
+
+  def up_to_date_question
+    return unless current_user_is_admin?
+
+    QuestionManager.up_to_date
+
+    respond_with :message, text: t('.up_to_dated')
   end
 
   # General Section
