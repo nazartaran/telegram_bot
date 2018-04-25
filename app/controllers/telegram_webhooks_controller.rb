@@ -30,12 +30,10 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
 
     respond_with :message, text: t('.hi_admin', name: current_user.full_name), reply_markup: {
       inline_keyboard: [
-        [
-          { text: t('.announce'), callback_data: 'init_tournament' },
-          { text: t('.start'), callback_data: 'start_tournament' },
-          { text: t('.add'), callback_data: 'add_questions' },
-          { text: t('.notify'), callback_data: 'notify' }
-        ]
+        [{ text: t('.announce'), callback_data: 'init_tournament' }],
+        [{ text: t('.start'), callback_data: 'start_tournament' }],
+        [{ text: t('.add'), callback_data: 'add_questions' }],
+        [{ text: t('.notify'), callback_data: 'notify' }]
       ]
     }
   end
@@ -69,9 +67,7 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
     NotifyAll.new.each do |subscriber|
       bot.send_message(chat_id: subscriber.chat_id, text: t('.initial_tournament'), reply_markup: {
         inline_keyboard: [
-          [
-            { text: t('.register'), callback_data: 'register' }
-          ]
+          [{ text: t('.register'), callback_data: 'register' }]
         ]
       })
     end
