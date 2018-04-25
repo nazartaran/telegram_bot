@@ -25,6 +25,8 @@ en:
       start: Start tournament
       add: Add questions
       notify: Notify
+      up_to_date_question: Up to Date Questions
+      close: Close Tournament
     add_admin:
       added: Admin added
       bad_data: Bad Name, please check it again
@@ -33,6 +35,8 @@ en:
       register: Register
       please_send_a_file: Please send me a file with the text
       attach_csv: Please attach CSV file with the questions
+      up_to_dated: Done
+      closed: Closed Tournament
   tournament:
     correct_answer:
       continue: Congratulations! Your answer is correct and you've made it to the next round!
