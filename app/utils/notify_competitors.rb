@@ -1,4 +1,4 @@
-class NotifyCompetitors
+class NotifyCompetitors < Notify
   def initialize
     @subscribers = User.competitors
   end
