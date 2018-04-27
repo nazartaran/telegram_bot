@@ -2,6 +2,10 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   include Telegram::Bot::UpdatesController::MessageContext
   use_session!
 
+  def start(*args)
+    current_user
+  end
+
   def message(message)
     if document?(message)
       proceed_csv(message)
@@ -30,6 +34,7 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
       respond_with :message, text: t('.bad_data')
     end
   end
+
 
   def admin
     return unless current_user_is_admin?
@@ -69,6 +74,7 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   def start_tournament(time = 30)
     return unless current_user_is_admin?
 
+    Tournaments::Start.call(bot, time)
     Tournaments::Start.call(bot, time)
   end
 
