@@ -3,7 +3,7 @@ class Notify
 
   include Enumerable
 
-  attr_accessor :subscribers
+  attr_reader :subscribers
 
   def each(&block)
     batches = subscribers.to_a.in_groups_of(SUBSCRIBERS_BATCH_SIZE, false)
