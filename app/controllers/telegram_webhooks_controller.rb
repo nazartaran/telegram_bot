@@ -7,8 +7,6 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   end
 
   def message(message)
-    hand_shake
-
     if document?(message)
       proceed_csv(message)
     elsif photo?(message)
@@ -97,7 +95,6 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
     return unless current_user_is_admin?
 
     Tournaments::Start.call(bot, time)
-    Tournaments::Start.call(bot, time)
   end
 
   def close_tournament
@@ -174,6 +171,4 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   def process_sticker(msg)
     respond_with :sticker, sticker: msg['sticker']['file_id']
   end
-
-  alias_method :hand_shake, :current_user
 end
