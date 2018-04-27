@@ -70,8 +70,6 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
     return unless current_user_is_admin?
 
     Tournaments::Start.call(bot, time)
-
-    respond_with :message, text: t('telegram_webhooks.start_tournament.started')
   end
 
   def close_tournament

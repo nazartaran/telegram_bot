@@ -17,10 +17,12 @@ module Tournaments
     end
 
     def call
-      announce_start
-      sleep(time_until_start)
+      announce_players
 
       Thread.new do
+        sleep(time_until_start)
+        announce_start
+
         tournament.start
 
         until tournament.has_winner?
@@ -65,11 +67,19 @@ module Tournaments
       end
     end
 
-    def announce_start
+    def announce_players
       players = tournament.current_competitors.map(&:full_name).join(', ')
       tournament.current_competitors.each do |competitor|
-        bot.send_message(chat_id: competitor.chat_id, text: I18n.t('tournament.announce_start', time: time_until_start,
-                                                                                                players: players),
+        bot.send_message(chat_id: competitor.chat_id, text: I18n.t('tournament.announce_start',
+                                                                   time: time_until_start,
+                                                                   players: players),
+                                                      parse_mode: 'Markdown')
+      end
+    end
+
+    def announce_start
+      tournament.current_competitors.each do |competitor|
+        bot.send_message(chat_id: competitor.chat_id, text: I18n.t('telegram_webhooks.start_tournament.started'),
                          parse_mode: 'Markdown')
       end
     end
