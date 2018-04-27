@@ -49,7 +49,7 @@ module Tournaments
     end
 
     def competitors
-      @competitors ||= User.competitors
+      @competitors ||= NotifyCompetitors.new
     end
 
     def question(round)
