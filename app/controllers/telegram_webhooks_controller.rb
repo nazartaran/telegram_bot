@@ -3,16 +3,22 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   use_session!
 
   def message(message)
-    return proceed_csv(message) if document?(message)
-    return proceed_photo(message) if photo?(message)
-    if Tournament.ongoing && current_user.competes_in_tournament
-      result = Tournaments::ResponseParser.parse(message['text'].mb_chars.downcase.to_s, current_user)
-      response_text = result.message
-    else
-      response_text = message['text']
-    end
+    if document?(message)
+      proceed_csv(message)
+    elsif photo?(message)
+      proceed_photo(message)
+    elsif sticker?(message)
+      process_sticker(message)
+    elsif message['text'].present?
+      if Tournament.ongoing && current_user.competes_in_tournament
+        result = Tournaments::ResponseParser.parse(message['text'].mb_chars.downcase.to_s, current_user)
+        response_text = result.message
+      else
+        response_text = message['text']
+      end
 
-    respond_with :message, text: response_text, reply_markup: nil
+      respond_with :message, text: response_text, reply_markup: nil
+    end
   end
 
   def add_admin(pwd = nil, first_name, last_name)
@@ -46,22 +52,7 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   end
 
   private
-
-  # example usage: get_markup('/za_10', '/clear_my_score', '/stop')
-  # code for generating keyboard buttons
-  def get_markup(*buttons)
-    Telegram::Bot::Types::ReplyKeyboardMarkup
-      .new(keyboard: buttons.each_slice(1), one_time_keyboard: true).to_h
-  end
-
   # Admin Section
-  def start_tournament(time = 30)
-    return unless current_user_is_admin?
-
-    Tournaments::Start.call(bot, time)
-
-    respond_with :message, text: t('telegram_webhooks.start_tournament.started')
-  end
 
   def init_tournament
     return unless current_user_is_admin?
@@ -73,6 +64,14 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
         ]
       })
     end
+  end
+
+  def start_tournament(time = 30)
+    return unless current_user_is_admin?
+
+    Tournaments::Start.call(bot, time)
+
+    respond_with :message, text: t('telegram_webhooks.start_tournament.started')
   end
 
   def close_tournament
@@ -118,12 +117,11 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
     current_user.is_admin?
   end
 
-  def photo?(msg)
-    msg['photo'].present?
-  end
-
-  def document?(msg)
-    msg['document'].present?
+  # def photo? def document? def sticker?
+  %w(photo document sticker).each do |method_name|
+    define_method "#{method_name}?" do |msg|
+      msg[method_name].present?
+    end
   end
 
   def proceed_photo(msg)
@@ -145,5 +143,9 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
     else
       respond_with :message, text: t('.bad_upload'), parse_mode: 'Markdown'
     end
+  end
+
+  def process_sticker(msg)
+    respond_with :sticker, sticker: msg['sticker']['file_id']
   end
 end
