@@ -5,6 +5,7 @@ module Tournaments
     ROUND_TIME_IN_SECONDS = 60
     WINNERS_COUNT = 1
     Response = Struct.new(:response_text)
+    NO_ONE = 'NoOne'
 
     def self.call(*args)
       new(*args).call
@@ -25,7 +26,7 @@ module Tournaments
 
         tournament.start
 
-        until tournament.has_winner?
+        until tournament.has_winner? || tournament.no_answers_at_all?
           time = Time.now
 
           round_question = question(tournament.round)
@@ -78,7 +79,7 @@ module Tournaments
     end
 
     def announce_start
-      tournament.current_competitors.each do |competitor|
+      competitors.each do |competitor|
         bot.send_message(chat_id: competitor.chat_id, text: I18n.t('telegram_webhooks.start_tournament.started'),
                          parse_mode: 'Markdown')
       end
@@ -94,7 +95,7 @@ module Tournaments
     def announce_winner
       winner = CorrectUser.winner(tournament.previous_round)
 
-      GoogleAdapter::Spreadsheets::InsertTournamentWinner.call(winner.full_name)
+      GoogleAdapter::Spreadsheets::InsertTournamentWinner.call(winner&.full_name || NO_ONE)
       message = winner ? I18n.t('tournament.announce_winner', winner: winner.full_name) : I18n.t('tournament.no_winner')
       competitors.each do |competitor|
         bot.send_message(chat_id: competitor.chat_id, text: message, parse_mode: 'Markdown')
