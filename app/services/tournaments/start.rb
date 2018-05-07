@@ -22,7 +22,6 @@ module Tournaments
 
       Thread.new do
         sleep(time_until_start)
-        announce_start
 
         tournament.start
 
@@ -75,13 +74,6 @@ module Tournaments
                                                                    time: time_until_start,
                                                                    players: players),
                                                       parse_mode: 'Markdown')
-      end
-    end
-
-    def announce_start
-      competitors.each do |competitor|
-        bot.send_message(chat_id: competitor.chat_id, text: I18n.t('telegram_webhooks.start_tournament.started'),
-                         parse_mode: 'Markdown')
       end
     end
 
