@@ -17,8 +17,6 @@ en:
       no_active_questions: No more active questions left!
     register:
       successfull_registration: You have successfully registered for a tournament
-    start_tournament:
-      started: Tournament has begun!
     admin:
       hi_admin: 'Hello, admin %{name}'
       announce: Announce tournament

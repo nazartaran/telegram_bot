@@ -16,8 +16,6 @@ en:
       no_active_questions: Більше ніяких запитань!
     register:
       successfull_registration: Ви успішно зареєструвалися на наш черговий турнір. Очікуйте на запитання!
-    start_tournament:
-      started: Турнір розпочато!
     admin:
       hi_admin: 'Привіт, адмін %{name}'
       announce: Анонсувати турнір
