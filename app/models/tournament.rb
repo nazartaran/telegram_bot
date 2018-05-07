@@ -1,5 +1,6 @@
 class Tournament
   FIRST_ROUND = 1
+  SECOND_ROUND = 2
   WINNERS_COUNT = 1
 
   include Mongoid::Document
@@ -43,6 +44,10 @@ class Tournament
     return false if first_round?
 
     current_competitors.count <= 1
+  end
+
+  def no_answers_at_all?
+    current_competitors.empty? && round == SECOND_ROUND
   end
 
   def previous_round

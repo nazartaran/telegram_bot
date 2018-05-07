@@ -59,8 +59,8 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   end
 
   private
-  # Admin Section
 
+  # Admin Section
   def init_tournament
     return unless current_user_is_admin?
 
