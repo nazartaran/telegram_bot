@@ -2,7 +2,7 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   include Telegram::Bot::UpdatesController::MessageContext
   use_session!
 
-  def start(*args)
+  def start(*)
     current_user
   end
 
@@ -54,6 +54,8 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   def callback_query(data, *attrs)
     answer_callback_query nil
     send(data, *attrs)
+  rescue
+    respond_with :message, text: t('.try_again')
   end
 
   private

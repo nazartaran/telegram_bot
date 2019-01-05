@@ -1,4 +1,4 @@
-en:
+ua:
   telegram_webhooks:
     start:
       hi: Привіт!
@@ -36,6 +36,7 @@ en:
       важливо, щоб питання не повторювались'
       up_to_dated: Зроблено
       closed: Турнір закрито
+      try_again: Щось пішло не так, спробуйте пізніше
   tournament:
     correct_answer:
       continue: Вітаємо! Ваша відповідь правильна і ви проходите далі!
