@@ -69,7 +69,7 @@ module Tournaments
 
     def announce_players
       players = tournament.current_competitors.map(&:full_name).join(', ')
-      tournament.current_competitors.each do |competitor|
+      competitors.each do |competitor|
         bot.send_message(chat_id: competitor.chat_id, text: I18n.t('tournament.announce_start',
                                                                    time: time_until_start,
                                                                    players: players),
