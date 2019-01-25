@@ -35,6 +35,15 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
     end
   end
 
+  def add_magister(pwd = nil, first_name, last_name)
+    return unless current_user_is_admin? || pwd == Rails.application.secrets[:bot_publish_password]
+
+    if User.make_magister_by_name(first_name, last_name)
+      respond_with :message, text: t('.added')
+    else
+      respond_with :message, text: t('.bad_data')
+    end
+  end
 
   def admin
     return unless current_user_is_admin?
@@ -63,6 +72,8 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   # Admin Section
   def init_tournament
     return unless current_user_is_admin?
+
+    RegistrationStatus.instance.update(on: true)
 
     NotifyAll.new.each do |subscriber|
       bot.send_message(chat_id: subscriber.chat_id, text: t('.initial_tournament'), reply_markup: {
