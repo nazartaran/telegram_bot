@@ -19,7 +19,6 @@ module Tournaments
         result(text: I18n.t('tournament.registration.already_in'))
       else
         user.update_attributes!(competes_in_tournament: true, round: 1)
-        InsertUserWorker.perform_async(user.full_name)
         result(text: I18n.t('tournament.registration.success'))
       end
     end

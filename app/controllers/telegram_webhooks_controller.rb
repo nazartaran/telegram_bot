@@ -52,6 +52,7 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
       inline_keyboard: [
         [{ text: t('.notify'), callback_data: 'notify' }],
         [{ text: t('.announce'), callback_data: 'init_tournament' }],
+        [{ text: t('.competitors_count'), callback_data: 'competitors_count' }],
         [{ text: t('.start'), callback_data: 'start_tournament' }],
         [{ text: t('.close'), callback_data: 'close_tournament' }],
         [{ text: t('.add'), callback_data: 'add_questions' }],
@@ -82,6 +83,12 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
         ]
       })
     end
+  end
+
+  def competitors_count
+    return unless current_user_is_admin?
+
+    respond_with :message, text: User.competitors.count
   end
 
   def start_tournament(time = 30)

@@ -23,11 +23,15 @@ en:
       start: Start tournament
       add: Add questions
       notify: Notify
+      competitors_count: Current number of competitors
       up_to_date_question: Up to Date Questions
       close: Close Tournament
     add_admin:
       added: Admin added
       bad_data: Bad Name, please check it again
+    add_magister:
+        added: Magister added
+        bad_data: Bad Name, please check it again
     callback_query:
       initial_tournament: The tournament will start soon. Participate!
       register: Register
@@ -41,6 +45,7 @@ en:
       continue: Congratulations! Your answer is correct and you've made it to the next round!
       too_late: 'Your answer is correct, but you posted it too late. You were %{number} who answered correctly. Maybe next time.'
       non_scoring: Congratulations! Your answer is correct! But you're participating in challenge anymore
+    magister_answer: Magister, bravo!
     incorrect_answer: Your answer is incorrect. Try again!
     not_started: Tournament not started yet!
     already_answered: You already gave a correct answer to this question
@@ -52,5 +57,6 @@ en:
       tournament_in_progress: Sorry, but Tournament has already been started
       already_in: You are already registered for a tournament
       success: You have been successfully registered for a tournament
+      disabled: The button is outdated, please wait for new announce
   google_spreadsheet:
     empty_creadentials_prompt: Open the following URL in the browser and enter the resulting code after authorization
