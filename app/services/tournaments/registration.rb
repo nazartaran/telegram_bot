@@ -11,6 +11,8 @@ module Tournaments
     end
 
     def call
+      return result(text: I18n.t('tournament.registration.disabled')) unless RegistrationStatus.instance.on?
+
       if Tournament.ongoing
         result(text: I18n.t('tournament.registration.tournament_in_progress'))
       elsif user.competes_in_tournament

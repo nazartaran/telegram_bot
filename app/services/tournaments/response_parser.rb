@@ -34,7 +34,9 @@ module Tournaments
     end
 
     def scoring_parser
-      if user_already_answered?
+      if user.is_magister?
+        result(message: I18n.t('tournament.magister_answer'))
+      elsif user_already_answered?
         result(message: I18n.t('tournament.already_answered'))
       elsif correct_answer? && answer_in_time?
         mark_user_as_correct
