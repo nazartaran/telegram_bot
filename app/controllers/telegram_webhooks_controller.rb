@@ -2,7 +2,7 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   include Telegram::Bot::UpdatesController::MessageContext
   use_session!
 
-  def start(*args)
+  def start(*)
     current_user
   end
 
@@ -37,6 +37,15 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
     end
   end
 
+  def add_magister(pwd = nil, first_name, last_name)
+    return unless current_user_is_admin? || pwd == Rails.application.secrets[:bot_publish_password]
+
+    if User.make_magister_by_name(first_name, last_name)
+      respond_with :message, text: t('.added')
+    else
+      respond_with :message, text: t('.bad_data')
+    end
+  end
 
   def admin
     return unless current_user_is_admin?
@@ -45,6 +54,7 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
       inline_keyboard: [
         [{ text: t('.notify'), callback_data: 'notify' }],
         [{ text: t('.announce'), callback_data: 'init_tournament' }],
+        [{ text: t('.competitors_count'), callback_data: 'competitors_count' }],
         [{ text: t('.start'), callback_data: 'start_tournament' }],
         [{ text: t('.close'), callback_data: 'close_tournament' }],
         [{ text: t('.add'), callback_data: 'add_questions' }],
@@ -56,6 +66,8 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   def callback_query(data, *attrs)
     answer_callback_query nil
     send(data, *attrs)
+  rescue
+    respond_with :message, text: t('.try_again')
   end
 
   private
@@ -64,6 +76,8 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   def init_tournament
     return unless current_user_is_admin?
 
+    RegistrationStatus.instance.update(on: true)
+
     NotifyAll.new.each do |subscriber|
       bot.send_message(chat_id: subscriber.chat_id, text: t('.initial_tournament'), reply_markup: {
         inline_keyboard: [
@@ -71,6 +85,12 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
         ]
       })
     end
+  end
+
+  def competitors_count
+    return unless current_user_is_admin?
+
+    respond_with :message, text: User.competitors.count
   end
 
   def start_tournament(time = 30)

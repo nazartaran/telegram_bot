@@ -14,6 +14,7 @@ module Tournaments
     def initialize(bot, time_until_start)
       @bot = bot
       @tournament = Tournament.create!(name: SecureRandom.hex, ongoing: true)
+      InsertUsersWorker.perform_async
       @time_until_start = time_until_start.to_i.seconds
     end
 
@@ -68,11 +69,11 @@ module Tournaments
     end
 
     def announce_players
-      players = tournament.current_competitors.map(&:full_name).join(', ')
-      tournament.current_competitors.each do |competitor|
+      player_counts = tournament.current_competitors.count
+      competitors.each do |competitor|
         bot.send_message(chat_id: competitor.chat_id, text: I18n.t('tournament.announce_start',
                                                                    time: time_until_start,
-                                                                   players: players),
+                                                                   player_counts: player_counts),
                                                       parse_mode: 'Markdown')
       end
     end

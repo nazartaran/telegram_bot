@@ -11,6 +11,7 @@ class User
   field :competes_in_tournament, type: Boolean, default: 0
   field :is_bot, type: Boolean, default: 0
   field :is_admin, type: Boolean, default: 0
+  field :is_magister, type: Boolean, default: 0
 
   index({ uid: 1 }, { unique: true, name: 'uid_index' })
 
@@ -18,8 +19,16 @@ class User
 
   scope :competitors, -> { where(competes_in_tournament: true) }
 
+  def self.find_by_name(first_name, last_name)
+    find_by(first_name: first_name, last_name: last_name)
+  end
+
   def self.make_admin_by_name(first_name, last_name)
-    find_by(first_name: first_name, last_name: last_name)&.update(is_admin: true)
+    find_by_name(first_name, last_name)&.update(is_admin: true)
+  end
+
+  def self.make_magister_by_name(first_name, last_name)
+    find_by_name(first_name, last_name)&.update(is_magister: true)
   end
 
   def self.resolve_user(user_params)
