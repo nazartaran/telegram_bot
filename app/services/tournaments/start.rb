@@ -14,7 +14,7 @@ module Tournaments
     def initialize(bot, time_until_start)
       @bot = bot
       @tournament = Tournament.create!(name: SecureRandom.hex, ongoing: true)
-      InsertUsersWorker.perform_async
+      GoogleAdapter::Spreadsheets::InsertUsers.call
       @time_until_start = time_until_start.to_i.seconds
     end
 
