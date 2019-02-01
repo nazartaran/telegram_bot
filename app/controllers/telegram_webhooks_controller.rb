@@ -1,4 +1,6 @@
 class TelegramWebhooksController < Telegram::Bot::UpdatesController
+  REGISTER = 'register'.freeze
+
   include Telegram::Bot::UpdatesController::MessageContext
   use_session!
 
@@ -25,7 +27,7 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
     end
   end
 
-  def add_admin(pwd = nil, first_name, last_name)
+  def add_admin!(pwd = nil, first_name, last_name)
     return unless current_user_is_admin? || pwd == Rails.application.secrets[:bot_publish_password]
 
     if User.make_admin_by_name(first_name, last_name)
@@ -35,7 +37,7 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
     end
   end
 
-  def add_magister(pwd = nil, first_name, last_name)
+  def add_magister!(pwd = nil, first_name, last_name)
     return unless current_user_is_admin? || pwd == Rails.application.secrets[:bot_publish_password]
 
     if User.make_magister_by_name(first_name, last_name)
@@ -45,7 +47,7 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
     end
   end
 
-  def admin
+  def admin!
     return unless current_user_is_admin?
 
     respond_with :message, text: t('.hi_admin', name: current_user.full_name), reply_markup: {
@@ -63,7 +65,11 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
 
   def callback_query(data, *attrs)
     answer_callback_query nil
-    send(data, *attrs)
+    if data == REGISTER
+      register_handler(payload['message']['message_id'])
+    else
+      send(data, *attrs)
+    end
   rescue
     respond_with :message, text: t('.try_again')
   end
@@ -126,7 +132,13 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   end
 
   # General Section
-  def register(*)
+  def register_handler(msg_id)
+    # delete previous button if it was send no longer then 48 hourse, else - remove button
+    begin
+      bot.delete_message(chat_id: current_user.chat_id, message_id: msg_id)
+    rescue
+      bot.edit_message_reply_markup(chat_id: current_user.chat_id, message_id: msg_id, reply_markup: nil)
+    end
     result = Tournaments::Registration.call(current_user)
 
     respond_with :message, text: result.response_text, parse_mode: 'Markdown'
