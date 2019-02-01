@@ -137,7 +137,7 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
     begin
       bot.delete_message(chat_id: current_user.chat_id, message_id: msg_id)
     rescue
-      bot.edit_message_reply_markup(chat_id: current_user.chat_id, message_id: msg_id, reply_markup: nil)
+      bot.edit_message_reply_markup(chat_id: current_user.chat_id, message_id: msg_id, reply_markup: nil) rescue nil
     end
     result = Tournaments::Registration.call(current_user)
 
