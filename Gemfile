@@ -35,13 +35,10 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 # gem 'telegram-bot'
 gem 'telegram-bot'
 gem 'daemons', require: false
-gem 'redis-rails', '~> 5'
 gem 'telegram-bot-types'
 gem 'mongoid'
 gem 'google-api-client'
-gem 'sidekiq', '~> 5.0', '>= 5.0.4'
 gem 'similar_text', '~> 0.0.4'
-gem 'rest-client'
 gem 'airbrake', '~> 7.2'
 
 group :development, :test do
