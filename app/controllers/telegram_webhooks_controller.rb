@@ -23,7 +23,7 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
         response_text = message['text']
       end
 
-      respond_with :message, text: response_text, reply_markup: nil
+      respond_with :message, text: response_text
     end
   end
 
@@ -58,7 +58,8 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
         [{ text: t('.start'), callback_data: 'start_tournament' }],
         [{ text: t('.close'), callback_data: 'close_tournament' }],
         [{ text: t('.add'), callback_data: 'add_questions' }],
-        [{ text: t('.up_to_date_question'), callback_data: 'up_to_date_question' }]
+        [{ text: t('.up_to_date_question'), callback_data: 'up_to_date_question' }],
+        [{ text: t('.test_question'), callback_data: 'test_question' }]
       ]
     }
   end
@@ -123,6 +124,12 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
     respond_with :message, text: t('.attach_csv')
   end
 
+  def test_question
+    return unless current_user_is_admin?
+
+    Tournaments::QuestionTester.(bot)
+  end
+
   def up_to_date_question
     return unless current_user_is_admin?
 
@@ -141,7 +148,7 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
     end
     result = Tournaments::Registration.call(current_user)
 
-    respond_with :message, text: result.response_text, parse_mode: 'Markdown'
+    respond_with :message, text: result.response_text
   end
 
   def current_user
@@ -174,9 +181,9 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
 
     path_ending = bot.get_file(msg['document'])['result']['file_path']
     if QuestionsImporter.success?(path_ending)
-      respond_with :message, text: t('.success_upload'), parse_mode: 'Markdown'
+      respond_with :message, text: t('.success_upload')
     else
-      respond_with :message, text: t('.bad_upload'), parse_mode: 'Markdown'
+      respond_with :message, text: t('.bad_upload')
     end
   end
 
