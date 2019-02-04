@@ -40,7 +40,7 @@ module Tournaments
         result(message: I18n.t('tournament.already_answered'))
       elsif correct_answer? && answer_in_time?
         mark_user_as_correct
-        InsertRoundWinnerWorker.perform_async(user.full_name, correct_users_count)
+        GoogleAdapter::Spreadsheets::InsertRoundWinner.call(user.full_name, Tournament.ongoing, correct_users_count)
 
         result(message: I18n.t('tournament.correct_answer.continue'), correct_answer: true, continue: true)
       elsif correct_answer?
