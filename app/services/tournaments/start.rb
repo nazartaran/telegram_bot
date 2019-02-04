@@ -64,7 +64,7 @@ module Tournaments
       escaped_question = question.gsub(/(\")([^\"]+?)(\")/, '«\2»')
 
       competitors.each do |competitor|
-        bot.send_message(chat_id: competitor.chat_id, text: escaped_question, parse_mode: 'Markdown')
+        bot.send_message(chat_id: competitor.chat_id, text: escaped_question)
       end
     end
 
