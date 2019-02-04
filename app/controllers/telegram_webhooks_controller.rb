@@ -4,7 +4,7 @@ class TelegramWebhooksController < Telegram::Bot::UpdatesController
   include Telegram::Bot::UpdatesController::MessageContext
   use_session!
 
-  def start(*)
+  def start!(*)
     current_user
   end
 
