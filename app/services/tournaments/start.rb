@@ -73,8 +73,7 @@ module Tournaments
       competitors.each do |competitor|
         bot.send_message(chat_id: competitor.chat_id, text: I18n.t('tournament.announce_start',
                                                                    time: time_until_start,
-                                                                   player_counts: player_counts),
-                                                      parse_mode: 'Markdown')
+                                                                   player_counts: player_counts))
       end
     end
 
@@ -91,7 +90,7 @@ module Tournaments
       GoogleAdapter::Spreadsheets::InsertTournamentWinner.call(winner&.full_name || NO_ONE)
       message = winner ? I18n.t('tournament.announce_winner', winner: winner.full_name) : I18n.t('tournament.no_winner')
       competitors.each do |competitor|
-        bot.send_message(chat_id: competitor.chat_id, text: message, parse_mode: 'Markdown')
+        bot.send_message(chat_id: competitor.chat_id, text: message)
       end
     end
   end
