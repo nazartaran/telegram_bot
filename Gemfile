@@ -39,6 +39,7 @@ gem 'telegram-bot-types'
 gem 'mongoid'
 gem 'google-api-client'
 gem 'similar_text', '~> 0.0.4'
+gem 'rest-client'
 
 group :development, :test do
   gem 'factory_bot_rails'

@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'csv'
-require 'open-uri'
 
 module QuestionsImporter
   URL_PREFIX = 'https://api.telegram.org/file/bot'
